@@ -29,7 +29,7 @@ Works as a **Tampermonkey userscript** (recommended) or as a one-time script you
    - [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
    - [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
 2. Click the Tampermonkey icon → **Create a new script**.  
-3. Delete the default template and paste in the script from [`bjs-coupon-autoclip.js`](./bjs-coupon-autoclip.js).  
+3. Delete the default template and paste in the script from [`bjs-coupon-autoclip.js`](bjs-coupon-autoclip.js).  
 4. Save the script (`Ctrl+S`).  
 5. Navigate to [BJ’s Coupons Page](https://www.bjs.com/myCoupons).  
 6. Coupons will now clip automatically as they load 🎉  
