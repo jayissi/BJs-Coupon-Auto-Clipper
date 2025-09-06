@@ -50,7 +50,8 @@ If you don’t want to install Tampermonkey, you can run it manually:
 > Depending on browser settings, you may need to `allow pasting` before step 4.
 <!-- IGNORE [`MD028` - Blank line inside blockquote](https://github.com/DavidAnson/markdownlint/blob/v0.38.0/doc/md028.md) -->
 > [!WARNING]
-> You’ll need to re-paste the script each time you refresh the webpage when using Browser Console method.
+> You’ll need to re-paste the script each time you refresh <br/>
+> the webpage when using Browser Console method.
 
 ---
 
