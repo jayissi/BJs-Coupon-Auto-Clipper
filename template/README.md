@@ -1,7 +1,7 @@
 # 🛠 README Generator for BJ's Coupon Auto-Clipper
 
-This setup keeps your `README.md` automatically in sync with your script file (`bjs-coupon-autoclip.js`).  
-Instead of copy-pasting code manually, a Python script injects your JavaScript into a README template, `README-template.md`.
+This setup keeps your `README.md` automatically in sync with your JavaScript code file (`bjs-coupon-autoclip.js`).  
+Instead of copy-pasting code manually, a Python script (`update_readme.py`) injects your JavaScript code (`bjs-coupon-autoclip.js`) into a README template (`README-template.md`) and output the new `README.md`.
 
 ---
 
