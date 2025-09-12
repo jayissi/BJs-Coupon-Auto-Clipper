@@ -59,18 +59,18 @@ If you don’t want to install Tampermonkey, you can run it manually:
 
 ```js
 /*
-#!/usr/bin/env node
-
-==UserScript==
-@name         BJ's Coupon Auto-Clipper
-@namespace    https://www.tampermonkey.net
-@version      1.0
-@description  Automatically clips all BJ's coupons as they load on the page, with counter display
-@author       Johnny J. Ayissi
-@match        https://www.bjs.com/myCoupons
-@grant        none
-==/UserScript==
-*/
+ * #!/usr/bin/env node
+ *
+ * ==UserScript==
+ * @name         BJ's Coupon Auto-Clipper
+ * @namespace    https://www.tampermonkey.net
+ * @version      1.0
+ * @description  Automatically clips all BJ's coupons as they load on the page, with counter display
+ * @author       Johnny J. Ayissi
+ * @match        https://www.bjs.com/myCoupons
+ * @grant        none
+ * ==/UserScript==
+ */
 
 (function() {
     'use strict';
