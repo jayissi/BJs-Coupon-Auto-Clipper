@@ -1,82 +1,96 @@
-/*
- * #!/usr/bin/env node
- *
- * ==UserScript==
- * @name         BJ's Coupon Auto-Clipper
- * @namespace    https://www.tampermonkey.net
- * @version      1.0
- * @description  Automatically clips all BJ's coupons as they load on the page, with counter display
- * @author       Johnny J. Ayissi
- * @match        https://www.bjs.com/myCoupons
- * @grant        none
- * ==/UserScript==
- */
+// ==UserScript==
+// @name         BJ's Coupon Auto-Clipper
+// @namespace    https://www.tampermonkey.net
+// @version      1.0.1
+// @description  Automatically clips BJ's coupons as they load
+// @author       Johnny J. Ayissi
+// @match        https://www.bjs.com/myCoupons
+// @grant        none
+// @run-at       document-idle
+// ==/UserScript==
 
-(function() {
-    'use strict';
+(function () {
+  'use strict';
 
-    let clipCount = 0;
-    let counterBox;
+  let clipCount = 0;
+  let counterBox = null;
+  const clickQueue = [];
+  let processing = false;
 
-    // Add a floating counter to the page
-    function addCounter() {
-        counterBox = document.createElement("div");
-        counterBox.style.position = "fixed";
-        counterBox.style.bottom = "20px";
-        counterBox.style.right = "20px";
-        counterBox.style.background = "rgba(0, 128, 0, 0.8)";
-        counterBox.style.color = "#fff";
-        counterBox.style.padding = "8px 12px";
-        counterBox.style.borderRadius = "8px";
-        counterBox.style.fontSize = "14px";
-        counterBox.style.zIndex = "99999";
-        counterBox.style.fontFamily = "Arial, sans-serif";
-        counterBox.textContent = "Coupons clipped: 0";
-        document.body.appendChild(counterBox);
-    }
+  function addCounter() {
+    counterBox = document.createElement('div');
+    Object.assign(counterBox.style, {
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      background: 'rgba(0, 128, 0, 0.85)',
+      color: '#fff',
+      padding: '8px 12px',
+      borderRadius: '8px',
+      fontSize: '14px',
+      zIndex: '999999',
+      fontFamily: 'Arial, sans-serif',
+    });
+    counterBox.textContent = 'Coupons clipped: 0';
+    document.body.appendChild(counterBox);
+  }
 
-    // Update the floating counter
-    function updateCounter() {
-        if (counterBox) {
-            counterBox.textContent = `Coupons clipped: ${clipCount}`;
+  function updateCounter() {
+    if (counterBox) counterBox.textContent = `Coupons clipped: ${clipCount}`;
+  }
+
+  function enqueueButton(btn) {
+    if (!btn || btn.dataset.clicked || btn.dataset.enqueued) return;
+    btn.dataset.enqueued = 'true';
+    clickQueue.push(btn);
+  }
+
+  function processQueue(delayMs = 150) {
+    if (processing) return;
+    processing = true;
+
+    function next() {
+      if (clickQueue.length === 0) {
+        processing = false;
+        return;
+      }
+      const btn = clickQueue.shift();
+      try {
+        if (btn && !btn.dataset.clicked) {
+          btn.click();
+          btn.dataset.clicked = 'true';
+          clipCount++;
+          updateCounter();
+          console.log('✅ Clipped a coupon:', btn.innerText || btn.textContent || btn);
         }
+      } catch (err) {
+        console.warn('Click error:', err);
+      }
+      setTimeout(next, delayMs);
     }
 
-    // Function to clip coupons
-    function clipCoupons() {
-        const buttons = document.querySelectorAll(
-            'button.Buttonstyle__StyledButton-sc-1p91mnj-0.cyDgas'
-        );
+    next();
+  }
 
-        buttons.forEach(btn => {
-            if (!btn.dataset.clicked) {
-                btn.click();
-                btn.dataset.clicked = "true"; // mark so we don't double click
-                clipCount++;
-                updateCounter();
-                console.log("✅ Coupons clipped:", clipCount);
-            }
-        });
-    }
+  function scanAndEnqueue() {
+    const sel = [
+      'button[name="clipToCard"]',
+      'button.Buttonstyle__StyledButton-sc-1p91mnj-0.cyDgas',
+    ].join(',');
 
-    // Main entry point
-    function main() {
-        // Run once on page load
-        addCounter();
-        clipCoupons();
+    const buttons = document.querySelectorAll(sel);
+    buttons.forEach(enqueueButton);
 
-        // Watch for dynamically loaded coupons
-        const observer = new MutationObserver(() => {
-            clipCoupons();
-        });
+    processQueue(120);
+  }
 
-        // Start observing the body for added/removed elements
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    }
+  function main() {
+    addCounter();
+    scanAndEnqueue();
 
-    // Run script
-    main();
+    const observer = new MutationObserver(scanAndEnqueue);
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  main();
 })();
